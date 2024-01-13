@@ -20,7 +20,7 @@ def load_inidv_dataset(set_path: str) -> tuple:
     return (texts, labels)
 
 
-def load_dataset(train_path: str, test_path: str, seed=1) -> tuple:
+def load_imdb_dataset(train_path: str, test_path: str, seed=1) -> tuple:
     train_texts = []
     train_labels = []
     
