@@ -12,7 +12,7 @@ def load_inidv_dataset(set_path: str) -> tuple:
         cat_path = os.path.join(set_path, label)
         for file_name in os.listdir(cat_path):
             file_path = os.path.join(cat_path, file_name)
-            with open(file_path, 'r') as file:
+            with open(file_path, 'r', encoding='utf-8') as file:
                 text = file.read()
                 texts.append(text)
             labels.append(0 if label=='neg' else 1)
