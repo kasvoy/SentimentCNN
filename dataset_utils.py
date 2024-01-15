@@ -1,8 +1,14 @@
-import os, re, random
+import os
+import re
+import random
+
+import pandas as pd
+import numpy as np
 
 IMDB_DATA_PATH        = "data/aclImdb/"
 POLARITY_v1_DATA_PATH = "data/rt-polaritydata/rt-polaritydata/"
 POLARITY_v2_DATA_PATH = "data/review_polarity/txt_sentoken"
+ROTTEN_PATH           = "data/rotten/rotten_tomatoes_critic_reviews.csv"
 
 def load_inidv_dataset(set_path: str) -> tuple:
     texts = []
@@ -64,3 +70,26 @@ def load_polarity(v1_path, v2_path):
     (v2_texts, v2_labels) = load_inidv_dataset(set_path=POLARITY_v2_DATA_PATH)
     
     return ((v1_texts, v1_labels), (v2_texts, v2_labels))
+
+
+def load_rotten(rotten_path, seed=1):
+    df = pd.read_csv(rotten_path).drop_duplicates()
+    df = df[['review_type', 'review_content']]
+    
+    #getting only non empty reviews
+    df = df.loc[df['review_content'].notna()]
+    
+    #removing the reviews that ask the reader to click somewhere else
+    df = df.loc[~df['review_content'].str.contains('full review|click for review|read review')]
+    
+    df['review_type'].replace({'Fresh': 1, 'Rotten': 0}, inplace=True)
+    df.rename(columns={'review_type': 'positive_review'}, inplace=True)
+    
+    rotten_texts  = df['review_content'].to_list()
+    rotten_labels = df['positive_review'].to_list()
+    
+    random.seed(seed)
+    random.shuffle(rotten_texts)
+    random.shuffle(rotten_labels)
+    
+    return (rotten_texts, rotten_labels)
