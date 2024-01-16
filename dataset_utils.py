@@ -67,29 +67,64 @@ def load_polarity(v1_path, v2_path):
                 v1_labels.append(label)
 
    
-    (v2_texts, v2_labels) = load_inidv_dataset(set_path=POLARITY_v2_DATA_PATH)
+    (v2_texts, v2_labels) = load_inidv_dataset(set_path=v2_path)
     
     return ((v1_texts, v1_labels), (v2_texts, v2_labels))
 
 
 def load_rotten(rotten_path, seed=1):
-    df = pd.read_csv(rotten_path).drop_duplicates()
+    df = pd.read_csv(ROTTEN_PATH).drop_duplicates()
     df = df[['review_type', 'review_content']]
-    
+
     #getting only non empty reviews
     df = df.loc[df['review_content'].notna()]
-    
+
     #removing the reviews that ask the reader to click somewhere else
     df = df.loc[~df['review_content'].str.contains('full review|click for review|read review')]
-    
+
     df['review_type'].replace({'Fresh': 1, 'Rotten': 0}, inplace=True)
     df.rename(columns={'review_type': 'positive_review'}, inplace=True)
+
+    is_positive = df['positive_review'] == 1
+    pos_df = df.loc[is_positive]
+    neg_df = df.loc[~is_positive]
+
+    pos_texts = pos_df['review_content'].tolist()
+    neg_texts = neg_df['review_content'].tolist()
+
+    pos_25 = random.sample(pos_texts, 25000)
+    neg_25 = random.sample(neg_texts, 25000)
+
+    train_pos = list(zip(pos_25[:12500], [1 for _ in range(12500)]))
+    test_pos  = list(zip(pos_25[12500:], [1 for _ in range(12500)]))
+    train_neg = list(zip(neg_25[:12500], [0 for _ in range(12500)]))
+    test_neg  = list(zip(neg_25[12500:], [0 for _ in range(12500)]))
+
+    train_set = train_pos + train_neg
+    test_set  = test_pos + test_neg
+
+    train_texts, train_labels = zip(*train_set)
+    test_texts, test_labels = zip(*test_set)
+
+    train_texts = list(train_texts)
+    train_labels = list(train_labels)
+    test_texts = list(test_texts)
+    test_labels = list(test_labels)
+
+    random.seed(1)
+    random.shuffle(train_texts)
+    random.shuffle(test_texts)
+
+    random.seed(1)
+    random.shuffle(train_labels)
+    random.shuffle(test_labels)
     
-    rotten_texts  = df['review_content'].to_list()
-    rotten_labels = df['positive_review'].to_list()
-    
-    random.seed(seed)
-    random.shuffle(rotten_texts)
-    random.shuffle(rotten_labels)
-    
-    return (rotten_texts, rotten_labels)
+    return ((train_texts, train_labels), (test_texts, test_labels))
+
+
+def display_dataset_info(texts, labels, name):
+    print(f"Dataset: {name}.")
+    print(f"Total number of samples: {len(texts)}")
+    print(f"Positive reviews total: {sum(label==1 for label in labels)}")
+    print(f"Negative reviews total: {sum(label==0 for label in labels)}")
+   
