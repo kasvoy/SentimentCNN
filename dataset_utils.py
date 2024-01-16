@@ -111,11 +111,11 @@ def load_rotten(rotten_path, seed=1):
     test_texts = list(test_texts)
     test_labels = list(test_labels)
 
-    random.seed(1)
+    random.seed(seed)
     random.shuffle(train_texts)
     random.shuffle(test_texts)
 
-    random.seed(1)
+    random.seed(seed)
     random.shuffle(train_labels)
     random.shuffle(test_labels)
     
