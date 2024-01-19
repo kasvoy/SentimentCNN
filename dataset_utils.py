@@ -41,7 +41,7 @@ def load_imdb_dataset(train_path: str, test_path: str, seed=1) -> tuple:
     random.shuffle(train_labels)
     random.shuffle(test_labels)
     
-    #remove html tags from the texts
+    #removing html tags present in the data
     train_texts = [re.sub('<.*?>', '', text) for text in train_texts]
     test_texts  = [re.sub('<.*?>', '', text) for text in test_texts]
     
@@ -66,8 +66,11 @@ def load_polarity(v1_path, v2_path):
                 v1_texts.append(snippet)
                 v1_labels.append(label)
 
-   
     (v2_texts, v2_labels) = load_inidv_dataset(set_path=v2_path)
+    
+    #removing newline tags present in the polarity texts
+    v1_texts = [text.replace('\n', ' ') for text in v1_texts]
+    v2_texts = [text.replace('\n', ' ') for text in v2_texts]
     
     return ((v1_texts, v1_labels), (v2_texts, v2_labels))
 
@@ -127,4 +130,5 @@ def display_dataset_info(texts, labels, name):
     print(f"Total number of samples: {len(texts)}")
     print(f"Positive reviews total: {sum(label==1 for label in labels)}")
     print(f"Negative reviews total: {sum(label==0 for label in labels)}")
-   
+    
+
