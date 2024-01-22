@@ -82,6 +82,7 @@ def display_dataset_info(texts, labels, name):
     print(f"Total number of samples: {len(texts)}")
     print(f"Positive reviews total: {sum(label==1 for label in labels)}")
     print(f"Negative reviews total: {sum(label==0 for label in labels)}")
+    print("--------------------------------------")
     
     
 def load_rotten_split(rotten_path, seed=1):
