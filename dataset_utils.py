@@ -122,13 +122,21 @@ def load_rotten_split(rotten_path, seed=1):
     df.drop(short_reviews_test_df.index, inplace=True)
     
     random_reviews_test_df = df.sample(n=10000, random_state=42)
-
+    df.drop(random_reviews_test_df.index, inplace=True)
+    
+    pos_test_df = df[df['positive_review'] == 1].sample(n=1000, random_state=42)
+    neg_test_df = df[df['positive_review'] == 0].sample(n=1000, random_state=42)
+    
 
     #(label, text) tuples
     short_reviews_test = list(zip(short_reviews_test_df['positive_review'], short_reviews_test_df['review_content']))
     pos_reviews_train  = list(zip(pos_reviews_train_df['positive_review'], pos_reviews_train_df['review_content']))
     neg_reviews_train  = list(zip(neg_reviews_train_df['positive_review'], neg_reviews_train_df['review_content']))
     random_reviews_test= list(zip(random_reviews_test_df['positive_review'], random_reviews_test_df['review_content']))
+    pos_reviews_test   = list(zip(pos_test_df['positive_review'], pos_test_df['review_content']))
+    neg_reviews_test   = list(zip(neg_test_df['positive_review'], neg_test_df['review_content']))
+    
+    
     
     rotten_train = pos_reviews_train + neg_reviews_train
     
@@ -141,4 +149,4 @@ def load_rotten_split(rotten_path, seed=1):
     rotten_train_labels = [label for label,_ in rotten_train]
     
 
-    return (rotten_train_texts, rotten_train_labels, short_reviews_test, random_reviews_test)
+    return (rotten_train_texts, rotten_train_labels, short_reviews_test, random_reviews_test, pos_reviews_test, neg_reviews_test)
