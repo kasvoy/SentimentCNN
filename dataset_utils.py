@@ -77,7 +77,7 @@ def load_polarity(v1_path, v2_path):
     return ((v1_texts, v1_labels), (v2_texts, v2_labels))
 
 
-def load_rotten_split(rotten_path, seed=1):
+def load_rotten_split(rotten_path, n_train_samples=15000, seed=1):
     
     """
     Utility function for loading the rotten tomatoes critic dataset.
@@ -109,8 +109,8 @@ def load_rotten_split(rotten_path, seed=1):
     
     is_positive_mask = df['positive_review'] == 1
     
-    pos_reviews_train_df = df[is_positive_mask].sample(n=10000, random_state=42)    
-    neg_reviews_train_df = df[~is_positive_mask].sample(n=10000, random_state=42)
+    pos_reviews_train_df = df[is_positive_mask].sample(n=(int(n_train_samples/2)), random_state=42)    
+    neg_reviews_train_df = df[~is_positive_mask].sample(n=int((n_train_samples/2)), random_state=42)
     
     #dropping already sampled texts, so no repeated reviews across test sets.
     df.drop(neg_reviews_train_df.index, inplace=True)
