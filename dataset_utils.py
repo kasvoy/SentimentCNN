@@ -118,8 +118,11 @@ def load_rotten_split(rotten_path, n_train_samples=15000, seed=1):
     
     #using text.split(" ") on the space to represent a token as it closely resembles the output of a dedicated tokenizer (e.g. within spacy)
     #and counts the number of tokens in this way incomparably faster compared if we had used spacy.
-    short_reviews_test_df = df[df['review_content'].apply(lambda x: len(x.split(" ")) < 25)].sample(n=10000, random_state=42)
+    short_reviews_train_df = df[df['review_content'].apply(lambda x: len(x.split(" ")) < 25)].sample(n=5000, random_state=42)
+    df.drop(short_reviews_train_df.index, inplace=True)
+    short_reviews_test_df = df[df['review_content'].apply(lambda x: len(x.split(" ")) < 25)].sample(n=5000, random_state=42)
     df.drop(short_reviews_test_df.index, inplace=True)
+    
     
     random_reviews_test_df = df.sample(n=10000, random_state=42)
     df.drop(random_reviews_test_df.index, inplace=True)
@@ -129,6 +132,7 @@ def load_rotten_split(rotten_path, n_train_samples=15000, seed=1):
     
 
     #(label, text) tuples
+    short_reviews_train = list(zip(short_reviews_train_df['positive_review'], short_reviews_train_df['review_content']))
     short_reviews_test = list(zip(short_reviews_test_df['positive_review'], short_reviews_test_df['review_content']))
     pos_reviews_train  = list(zip(pos_reviews_train_df['positive_review'], pos_reviews_train_df['review_content']))
     neg_reviews_train  = list(zip(neg_reviews_train_df['positive_review'], neg_reviews_train_df['review_content']))
@@ -136,8 +140,7 @@ def load_rotten_split(rotten_path, n_train_samples=15000, seed=1):
     pos_reviews_test   = list(zip(pos_test_df['positive_review'], pos_test_df['review_content']))
     neg_reviews_test   = list(zip(neg_test_df['positive_review'], neg_test_df['review_content']))
     
-    
-    
+      
     rotten_train = pos_reviews_train + neg_reviews_train
     
     random.seed(seed)
@@ -149,4 +152,4 @@ def load_rotten_split(rotten_path, n_train_samples=15000, seed=1):
     rotten_train_labels = [label for label,_ in rotten_train]
     
 
-    return (rotten_train_texts, rotten_train_labels, short_reviews_test, random_reviews_test, pos_reviews_test, neg_reviews_test)
+    return (rotten_train_texts, rotten_train_labels, short_reviews_train, short_reviews_test, random_reviews_test, pos_reviews_test, neg_reviews_test)
