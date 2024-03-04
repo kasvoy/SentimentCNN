@@ -12,7 +12,7 @@ The sentiment analysis model within this notebook uses publicly available datase
 2. Sentiment Polarity Dataset (v1 and v2): https://www.cs.cornell.edu/people/pabo/movie-review-data/
 3. Rotten Tomatoes web scraped critic reviews: https://www.kaggle.com/datasets/stefanoleone992/rotten-tomatoes-movies-and-critic-reviews-dataset/
 
-All of the data is saved in a top *data/* directory. All of the data was downloaded, unzipped and placed in this directory as is. The exact paths are specified in the *dataset_utils.py* script.
+All of the data is saved in a top `data/` directory. All of the data was downloaded, unzipped and placed in this directory as is. The exact paths are specified in the `dataset_utils.py` script.
 
 
 ## Training your own models
